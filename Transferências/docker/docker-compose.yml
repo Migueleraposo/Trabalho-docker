@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  python:
+    image: python:3.9
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./python:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - mysql
+      - mongodb
+      - redis
+  node:
+    image: node:14
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./node:/app
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - mongodb
+      - redis
+  php:
+    image: php:8.0-apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./php:/var/www/html
+    depends_on:
+      - mysql
+      - redis
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=XPTO
+  mongodb:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb:/data/db
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
